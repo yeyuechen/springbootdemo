@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<!-- 常量：指定日志路径 -->
+	<property name="LOG_DIR" value="${logPath}"/>
+	<!-- 常量：应用名称 -->
+	<property name="APP_NAME" value="fps-payment"/>
+	<!-- 控制台输出 -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+<!--         <withJansi>true</withJansi> -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %c-line%L - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+	<!-- 所有日志输出到同一文件 -->
+    <appender name="allInFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <File>${LOG_DIR}/${APP_NAME}_all.log</File>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger - %msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${APP_NAME}_all.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+	<!-- SQL日志输出到文件 -->
+	<appender name="sqlAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+		
+		<File>${LOG_DIR}/${APP_NAME}_sql.log</File>
+		 <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${APP_NAME}_sql.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>  
+    
+    <!-- 包路径和输出目标文件 -->
+    <logger name="org.mybatis.spring" level="debug">  
+        <appender-ref ref="sqlAppender" />  
+    </logger>  
+        <logger name="com.howbuy" level="debug">  
+        <appender-ref ref="sqlAppender" />  
+    </logger>  
+    <logger name="java.sql" level="debug">  
+        <appender-ref ref="sqlAppender" />  
+    </logger>  
+     
+    <!-- 默认日志级别及输出目标设置 -->
+    <root level="info">
+        <appender-ref ref="consoleAppender" />
+        <appender-ref ref="allInFileAppender" />
+    </root>
+ 
+</configuration>
